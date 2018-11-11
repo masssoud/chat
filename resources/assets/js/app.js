@@ -40,9 +40,21 @@ const app = new Vue({
 
     			this.chat.message.push(this.message);
     			this.message='';
-    		//console.log(this.message);
 
-    	}
+                axios.post('/send', {
+
+                    message : this.message
+  })
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error =>  {
+    console.log(error);
+  })
+
+
+
+    	       }
     	}
     },
     mounted(){
@@ -50,7 +62,7 @@ const app = new Vue({
         // console.log("saasassa");
 
         Echo.private('chat').on('pusher:subscription_error', (e) => {
-        console.log("saasassa");
+        console.log("te");
         console.log(e);
     });
 
