@@ -29,8 +29,21 @@ const app = new Vue({
     data:{
     	message:'',
     	chat:{
-    		message:[]
-    	}
+    		message:[],
+            user:[],
+            color:[],
+            time:[]
+    	},
+        typing:''
+    },
+    watch:{
+        message(){
+Echo.private('chat')
+    .whisper('typing', {
+        name: this.message
+    });
+        }
+
     },
     methods:{
     	send(){
@@ -38,27 +51,82 @@ const app = new Vue({
     		
     		if (this.message.length != 0) {
 
-    			this.chat.message.push(this.message);
-    			this.message='';
-    		//console.log(this.message);
+                this.chat.message.push(this.message);
+                this.chat.user.push('You');
+                this.chat.color.push('success');
+                this.chat.time.push(this.getTime());
+                axios.post('/send', {
+
+                    message : this.message
+
+
+
+  })
+  .then(response => {
+    console.log(response);
+                    this.message=''
+
+  })
+  .catch(error => {
+    console.log(error);
+  });
+
 
     	}
-    	}
+    	},
+        getTime(){
+            let time = new Date();
+
+            return time.getHours()+':'+time.getMinutes();
+        }
     },
     mounted(){
         Pusher.logToConsole = true;
         // console.log("saasassa");
 
-        Echo.private('chat').on('pusher:subscription_error', (e) => {
-        console.log("saasassa");
+        Echo.private('chat').on('pusher:subscription_succeeded', (e) => {
+        console.log("testt");
         console.log(e);
-    });
+        })
+
+        .on('ChatEvent', (e) => {
+        console.log("saasassa");
+                        this.chat.message.push(e.message);
+                        this.chat.user.push(e.user.name);
+                        this.chat.color.push('warning');
+                        this.chat.time.push(this.getTime());
+        // console.log(e);
+        })
+        
+        .listenForWhisper('typing', (e) => {
 
 
-        Echo.private('chat').on('ChatEvent', (e) => {
-        console.log("saasassa");
-        console.log(e);
+            if (e.name != '') {
+    
+    this.typing = 'typing...';
+        // console.log(e.name);
+            }
+            else{
+
+                this.typing = '';
+    
+                }
     });
+
+        Echo.join(`chat`)
+    .here((users) => {
+
+        console.log(users);
+
+    })
+    .joining((user) => {
+        // console.log(user.name);
+    })
+    .leaving((user) => {
+        // console.log(user.name);
+    });
+
 
     }
+
 });

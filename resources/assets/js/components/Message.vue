@@ -2,9 +2,13 @@
 
 <div>
 
- <li class="list-group-item" :class="className"  ><slot></slot></li>
+ <li class="list-group-item" :class="className"  ><slot></slot>
 
-<small class="badge float-right" :class="badgeClass">you</small>
+ <small id="time">{{ time }}</small>
+
+ </li>
+
+<small class="badge float-right" :class="badgeClass">{{user}}</small>
 
 </div>
   
@@ -15,7 +19,9 @@
 <script>
     export default {
     props:[
-    'color'
+    'color',
+    'user',
+    'time'
     ],
     computed:{
     className(){
@@ -30,3 +36,14 @@
         }
     }
 </script>
+<style>
+	#time{
+
+	font-size:10px;
+	margin-top:10px;
+	color:black;
+
+	}
+
+
+</style>

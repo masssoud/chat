@@ -20,7 +20,7 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 // });
 
 
-Broadcast::channel('chat',function(){
+Broadcast::channel('chat',function($user){
 
-	return true;
+	return ['name'=>$user->name];
 });

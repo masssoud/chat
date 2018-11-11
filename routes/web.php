@@ -26,7 +26,7 @@ Route::get('chat',function(){
 
 });
 
-Route::get('/send', 'ChatController@send');
+Route::post('/send', 'ChatController@send');
 
 
 
